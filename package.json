@@ -2,12 +2,13 @@
   "name": "git-green",
   "version": "1.0.0",
   "description": "Cool Git Commit Graphs",
-  "main": "index.js",
+  "main": "app/index.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
-    "beautiful": "node beautiful-blessed.js",
-    "example-commits": "node test-commits.js",
+    "start": "node app/app.js",
+    "git-green": "node app/git-green.js",
+    "example-commits": "node app/test-commits.js",
+    "legacy": "node app/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
