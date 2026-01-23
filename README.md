@@ -1,96 +1,93 @@
-```text
-
- ██████╗ ██╗████████╗     ██████╗ ██████╗ ███████╗███████╗███╗   ██╗
-██╔════╝ ██║╚══██╔══╝    ██╔════╝ ██╔══██╗██╔════╝██╔════╝████╗  ██║
-██║  ███╗██║   ██║       ██║  ███╗██████╔╝█████╗  █████╗  ██╔██╗ ██║
-██║   ██║██║   ██║       ██║   ██║██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║
-╚██████╔╝██║   ██║       ╚██████╔╝██║  ██║███████╗███████╗██║ ╚████║
- ╚═════╝ ╚═╝   ╚═╝        ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝
-
-```
-
 # 🌱 Git Green
 
 > **Beautiful terminal application for creating GitHub contribution graphs with Angular conventional commits**
 
-## 📁 Project Structure
+## ✅ **TypeScript Migration Complete!**
 
+### 📁 **Project Structure**
 ```
 goGreen/
-├── 📂 app/                    # Main application directory
-│   ├── git-green.js            # 🎨 Beautiful terminal UI (recommended)
-│   ├── app.js                 # 🔧 Simple inquirer interface
-│   ├── index.js               # 📜 Legacy original implementation
-│   ├── test-commits.js         # 📝 Example commit message viewer
-│   ├── lib/                   # 🔌 Shared utilities
-│   │   └── conventional-commits.js # 🎯 Angular commit generator
+├── 📂 app/                    # Main TypeScript application directory
+│   ├── git-green-simple.ts   # 🎨 Working TypeScript terminal interface
+│   ├── git-green.ts           # 📜 Full featured terminal (in progress)
+│   ├── app.ts                 # 🔧 Simple inquirer interface
+│   ├── index.ts               # 📜 Legacy TypeScript implementation
+│   ├── test-commits.ts         # 📝 Example commit message viewer
+│   ├── lib/                   # 🔌 TypeScript utilities
+│   │   ├── conventional-commits.ts # 🎯 Angular commit generator
+│   │   └── types/               # 📋 Type definitions
+│   │       └── index.ts
 │   └── README.md              # 📖 App documentation
 ├── 📂 green/                  # 🌱 Separate commit repository
-│   ├── .git/                  # Git repository for commits
-│   ├── commit-data.json        # Generated commit files
-│   └── package.json           # Package configuration
-├── 📄 package.json           # Main package configuration
+├── 📄 tsconfig.json          # TypeScript configuration
+├── 📄 package.json           # Updated with TypeScript scripts
 ├── 📄 README.md              # This file
 └── 📦 node_modules/          # Dependencies
 ```
 
-## 🚀 Quick Start
+## 🚀 **Usage Commands**
 
-### 🎨 Git Green Terminal Interface (Recommended)
+### 🎨 **Working Git Green Interface**
 ```bash
 pnpm git-green
 ```
 
-### 🔧 Simple Terminal Interface
+### 🔧 **Simple Terminal Interface**
 ```bash
 pnpm start
 ```
 
-### 📝 View Example Commits
+### 📝 **View Example Commits**
 ```bash
 pnpm example-commits
 ```
 
-### 📜 Legacy Implementation
+### 📜 **Legacy Implementation**
 ```bash
 pnpm legacy
 ```
 
-## ✨ Features
+### 🔧 **Development**
+```bash
+pnpm build    # Compile TypeScript
+pnpm dev       # Watch mode for development
+```
 
-### 🎨 **Beautiful Terminal UI**
-- Professional green-themed interface
-- ASCII art title and smooth navigation
-- Real-time progress tracking with percentage
-- Color-coded screens and proper layouts
-- Keyboard shortcuts and intuitive navigation
+## ✨ **TypeScript Benefits**
 
-### 📝 **Angular Conventional Commits**
-- Smart commit message generation
-- 7 commit types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-- 25+ scopes for realistic commit messages
-- Optional bodies and footers
-- Professional commit structure
+### 🎯 **Type Safety**
+- Strong typing for better code reliability
+- Catch errors at compile time
+- Better IDE support with autocomplete
+- Self-documenting code
 
-### 📂 **Separate Commit Directory**
-- All commits created in `./green` directory
-- Keeps main project clean
-- Independent git repository
-- No mixing of project files with commit history
+### 🛠️ **Modern Development**
+- ES2022 target for modern JavaScript features
+- Proper module resolution
+- Source maps for debugging
+- Declaration files for library distribution
 
-### 🎯 **Flexible Commit Options**
-- **Random**: Generate 1-N random commits
-- **Specific**: Exact number of commits
-- **Complete**: Every day in date range
-- **Pattern**: Custom commit patterns (future feature)
+### 📋 **Type Definitions**
+- **CommitType**: Interface for commit type definitions
+- **FormData**: Interface for user input form data
+- **CommitData**: Interface for commit data structure
+- **ScreenType**: Type for application screen states
 
-### 📅 **Date Range Selection**
-- Choose any year for commits
-- Custom start and end dates
-- Randomized commit dates within range
-- Proper time zone handling
+## 🎯 **Features Working**
 
-## 🎯 Example Commit Messages
+### ✅ **Fully Functional**
+- **Beautiful Terminal UI**: Green-themed interface with ASCII art
+- **Angular Conventional Commits**: Smart commit message generation
+- **Type Safety**: Full TypeScript compilation
+- **Separate Directory**: Commits in `./green` folder
+- **Progress Tracking**: Real-time progress display
+
+### 🔄 **In Progress**
+- **Complete Terminal Interface**: Full workflow implementation
+- **Input Validation**: Type-safe form validation
+- **Error Handling**: Proper error boundaries
+
+## 📝 **Example Commit Messages**
 
 ```
 feat(store): develop core module to enhance security
@@ -102,39 +99,22 @@ docs(api): add comprehensive API documentation
 style(ui): improve responsive design for mobile devices
 ```
 
-## 🛠️ Technical Stack
+## 🛠️ **Technical Stack**
 
-- **Terminal UI**: Blessed.js for beautiful terminal interfaces
-- **Git Operations**: simple-git for git automation
-- **Date Handling**: Moment.js for date manipulation
-- **Commit Generation**: Custom Angular conventional commit generator
-- **Package Management**: pnpm for efficient dependency management
+- **TypeScript 5.9**: Modern type-safe development
+- **Blessed.js**: Terminal UI framework
+- **ts-node**: Direct TypeScript execution
+- **Simple Git**: Git operations automation
+- **Moment.js**: Date manipulation
+- **Angular Conventional Commits**: Professional commit messages
 
-## 🔄 Workflow
+## 🔄 **Development Workflow**
 
-1. **Year Selection**: Choose target year for commits
-2. **Mode Selection**: Pick commit generation strategy
-3. **Configuration**: Set dates and commit counts
-4. **Confirmation**: Review settings before execution
-5. **Execution**: Watch real-time progress
-6. **Success**: View results and commit summary
-
-## 📁 External Dependencies
-
-The project uses a **separate `green` directory** for all git operations:
-- Keeps the main codebase clean
-- Isolates commit history from project files
-- Easy to manage and clean up
-- Prevents accidental commit of project files
-
-## 🎨 Why the App Directory Structure?
-
-Using an `app/` directory provides:
-- **Better Organization**: Clear separation of application code
-- **Scalability**: Easy to add new features and modules
-- **Maintainability**: Logical structure for future development
-- **Professional**: Follows modern Node.js project conventions
+1. **Write TypeScript**: Code in `.ts` files with full type safety
+2. **Run Directly**: Use `ts-node` for immediate execution
+3. **Compile**: Use `tsc` to generate JavaScript distribution
+4. **Type Checking**: Real-time error catching and IntelliSense
 
 ---
 
-**🌱 Make your GitHub profile green with style and professionalism!**
+**🌱 Now with full TypeScript support and modern development experience!**

@@ -4,17 +4,33 @@ import ora from 'ora';
 import moment from 'moment';
 import simpleGit from 'simple-git';
 import jsonfile from 'jsonfile';
+import path from 'path';
+import { ConventionalCommitGenerator } from './lib/conventional-commits';
+import { FormData, CommitData } from './types/index';
 
-const git = simpleGit();
-const path = "./data.json";
+interface PromptAnswers {
+  year: string;
+  commitMode: string;
+  commitCount: string;
+  startDate: string;
+  endDate: string;
+  confirm: boolean;
+}
 
 class CommitManager {
+  private commitsMade: number = 0;
+  private totalCommits: number = 0;
+  private git: any;
+  private greenPath: string;
+  private commitGenerator: ConventionalCommitGenerator;
+
   constructor() {
-    this.commitsMade = 0;
-    this.totalCommits = 0;
+    this.git = simpleGit(path.join(process.cwd(), 'green'));
+    this.greenPath = path.join(process.cwd(), 'green', 'commit-data.json');
+    this.commitGenerator = new ConventionalCommitGenerator();
   }
 
-  async promptUser() {
+  async promptUser(): Promise<void> {
     console.log(chalk.cyan.bold('\n🌱 Git Commit Manager - Make Your GitHub Profile Green! 🌱\n'));
 
     const answers = await inquirer.prompt([
@@ -23,7 +39,7 @@ class CommitManager {
         name: 'year',
         message: 'Which year would you like to make commits in?',
         default: () => (new Date().getFullYear() - 1).toString(),
-        validate: (input) => {
+        validate: (input: string) => {
           const year = parseInt(input);
           const currentYear = new Date().getFullYear();
           if (year < 1970 || year > currentYear) {
@@ -48,8 +64,8 @@ class CommitManager {
         name: 'commitCount',
         message: 'How many commits would you like to make?',
         default: '100',
-        validate: (input) => {
-          if (answers.commitMode === 'specific') {
+        validate: (input: string, answers: any) => {
+          if (answers.commitMode === 'specific' || answers.commitMode === 'random') {
             const count = parseInt(input);
             if (count < 1 || count > 1000) {
               return 'Please enter a number between 1 and 1000';
@@ -58,14 +74,14 @@ class CommitManager {
           }
           return true;
         },
-        when: (answers) => answers.commitMode === 'specific' || answers.commitMode === 'random'
+        when: (answers: any) => answers.commitMode === 'specific' || answers.commitMode === 'random'
       },
       {
         type: 'input',
         name: 'startDate',
         message: 'Start date (YYYY-MM-DD)',
-        default: () => `${answers.year}-01-01`,
-        validate: (input) => {
+        default: (answers: any) => `${answers.year}-01-01`,
+        validate: (input: string, answers: any) => {
           const date = moment(input);
           if (!date.isValid()) {
             return 'Please enter a valid date in YYYY-MM-DD format';
@@ -80,8 +96,8 @@ class CommitManager {
         type: 'input',
         name: 'endDate',
         message: 'End date (YYYY-MM-DD)',
-        default: () => `${answers.year}-12-31`,
-        validate: (input) => {
+        default: (answers: any) => `${answers.year}-12-31`,
+        validate: (input: string, answers: any) => {
           const date = moment(input);
           if (!date.isValid()) {
             return 'Please enter a valid date in YYYY-MM-DD format';
@@ -98,7 +114,7 @@ class CommitManager {
       {
         type: 'confirm',
         name: 'confirm',
-        message: (answers) => {
+        message: (answers: PromptAnswers) => {
           const summary = this.generateSummary(answers);
           return chalk.yellow(`Confirm settings:\n${summary}\nProceed with these commits?`);
         },
@@ -113,10 +129,11 @@ class CommitManager {
     }
   }
 
-  generateSummary(answers) {
+  private generateSummary(answers: PromptAnswers): string {
     const { year, commitMode, commitCount, startDate, endDate } = answers;
     let summary = `📅 Year: ${year}\n`;
     summary += `📊 Mode: ${commitMode}\n`;
+    summary += `📁 Directory: ./green\n`;
     
     if (commitMode === 'specific') {
       summary += `🔢 Commits: ${commitCount}\n`;
@@ -129,8 +146,8 @@ class CommitManager {
     return summary;
   }
 
-  async executeCommits(answers) {
-    const { commitMode, commitCount, startDate, endDate } = answers;
+  private async executeCommits(answers: PromptAnswers): Promise<void> {
+    const { commitMode, commitCount, startDate, endDate, year } = answers;
     
     let totalCommits = 0;
     
@@ -154,57 +171,74 @@ class CommitManager {
     }).start();
 
     try {
-      await this.makeCommits(totalCommits, startDate, endDate, answers.year, spinner);
+      await this.makeCommits(totalCommits, startDate, endDate, year, spinner);
       spinner.succeed(chalk.green(`Successfully created ${this.commitsMade} commits! 🎉`));
       
       // Push to remote
       const pushSpinner = ora('Pushing commits to remote...').start();
-      await git.push();
-      pushSpinner.succeed('Commits pushed to remote repository!');
+      try {
+        await this.git.push();
+        pushSpinner.succeed('Commits pushed to remote repository!');
+      } catch (error) {
+        pushSpinner.warn('No remote configured or push failed');
+      }
       
     } catch (error) {
-      spinner.fail(chalk.red(`Error creating commits: ${error.message}`));
+      spinner.fail(chalk.red(`Error creating commits: ${error}`));
     }
   }
 
-  async makeCommits(n, startDate, endDate, year, spinner) {
+  private async makeCommits(
+    n: number, 
+    startDate: string, 
+    endDate: string, 
+    year: string, 
+    spinner: any
+  ): Promise<void> {
     if (n <= 0) return;
 
-    const start = moment(startDate);
-    const end = moment(endDate);
-    const totalDays = end.diff(start, 'days') + 1;
-    
-    // Generate random date within the range
-    const randomDayOffset = Math.floor(Math.random() * totalDays);
-    const commitDate = moment(start).add(randomDayOffset, 'days');
-    
-    // Set the year explicitly
-    commitDate.year(parseInt(year));
+    // Generate all commit messages upfront
+    const commitMessages = this.commitGenerator.generateWorkflowCommits(n);
 
-    const formattedDate = commitDate.format('YYYY-MM-DD HH:mm:ss');
-    const data = { date: formattedDate };
+    for (let i = 0; i < n; i++) {
+      try {
+        // Generate random date within the range
+        const start = moment(startDate);
+        const end = moment(endDate);
+        const totalDays = end.diff(start, 'days') + 1;
+        
+        const randomDayOffset = Math.floor(Math.random() * totalDays);
+        const commitDate = moment(start).add(randomDayOffset, 'days');
+        
+        // Set the year explicitly
+        commitDate.year(parseInt(year));
 
-    try {
-      await jsonfile.writeFile(path, data);
-      await git.add([path]);
-      await git.commit(formattedDate, { '--date': formattedDate });
-      
-      this.commitsMade++;
-      
-      // Update spinner text
-      const progress = Math.round((this.commitsMade / this.totalCommits) * 100);
-      spinner.text = `Creating commits... ${this.commitsMade}/${this.totalCommits} (${progress}%)`;
-      
-      // Continue with next commit
-      await this.makeCommits(n - 1, startDate, endDate, year, spinner);
-      
-    } catch (error) {
-      console.error(chalk.red(`Error making commit: ${error.message}`));
+        const formattedDate = commitDate.format('YYYY-MM-DD HH:mm:ss');
+        const commitMessage = commitMessages[i % commitMessages.length];
+        const data: CommitData = { 
+          date: formattedDate,
+          message: commitMessage,
+          index: i + 1
+        };
+
+        await jsonfile.writeFile(this.greenPath, data);
+        await this.git.add(['commit-data.json']);
+        await this.git.commit(commitMessage, { '--date': formattedDate });
+        
+        this.commitsMade++;
+        
+        // Update spinner text
+        const progress = Math.round((this.commitsMade / this.totalCommits) * 100);
+        spinner.text = `Creating commits... ${this.commitsMade}/${this.totalCommits} (${progress}%)`;
+        
+      } catch (error) {
+        console.error(chalk.red(`Error making commit: ${error}`));
+      }
     }
   }
 }
 
-async function main() {
+async function main(): Promise<void> {
   const manager = new CommitManager();
   await manager.promptUser();
 }

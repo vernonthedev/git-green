@@ -1,15 +1,23 @@
 import blessed from 'blessed';
 import figlet from 'figlet';
-import chalk from 'chalk';
-import ora from 'ora';
 import moment from 'moment';
 import simpleGit from 'simple-git';
 import jsonfile from 'jsonfile';
 import path from 'path';
-import { ConventionalCommitGenerator } from './lib/conventional-commits.js';
+import { ConventionalCommitGenerator } from './lib/conventional-commits';
+import { FormData, ScreenType, CommitData } from './types/index';
 
+export class GitGreenApp {
+  private screen: any;
+  private formData: FormData;
+  private currentStep: number;
+  private steps: ScreenType[];
+  private commitGenerator: ConventionalCommitGenerator;
+  private greenDir: string;
+  private greenGit: any;
+  private progressBar?: any;
+  private progressBox?: any;
 
-class BeautifulTerminalApp {
   constructor() {
     this.screen = blessed.screen({
       smartCSR: true,
@@ -43,12 +51,12 @@ class BeautifulTerminalApp {
     this.showWelcomeScreen();
   }
 
-  setupScreen() {
+  private setupScreen(): void {
     this.screen.key(['escape', 'C-c'], () => process.exit(0));
     this.screen.key(['q'], () => process.exit(0));
   }
 
-  clearScreen() {
+  private clearScreen(): void {
     this.screen.destroy();
     this.screen = blessed.screen({
       smartCSR: true,
@@ -64,7 +72,7 @@ class BeautifulTerminalApp {
     this.setupScreen();
   }
 
-  showWelcomeScreen() {
+  private showWelcomeScreen(): void {
     this.clearScreen();
 
     // Create main container
@@ -163,7 +171,7 @@ class BeautifulTerminalApp {
     this.screen.render();
   }
 
-  showYearScreen() {
+  private showYearScreen(): void {
     this.clearScreen();
 
     const mainBox = blessed.box({
@@ -241,7 +249,7 @@ class BeautifulTerminalApp {
     inputBox.focus();
 
     inputBox.key('enter', () => {
-      this.formData.year = inputBox.getValue();
+      this.formData.year = inputBox.getValue() || this.formData.year;
       this.showModeScreen();
     });
 
@@ -252,7 +260,7 @@ class BeautifulTerminalApp {
     this.screen.render();
   }
 
-  showModeScreen() {
+  private showModeScreen(): void {
     this.clearScreen();
 
     const mainBox = blessed.box({
@@ -358,7 +366,7 @@ class BeautifulTerminalApp {
     this.screen.render();
   }
 
-  showCommitCountScreen() {
+  private showCommitCountScreen(): void {
     this.clearScreen();
 
     const mainBox = blessed.box({
@@ -440,7 +448,7 @@ class BeautifulTerminalApp {
     inputBox.focus();
 
     inputBox.key('enter', () => {
-      this.formData.commitCount = inputBox.getValue();
+      this.formData.commitCount = inputBox.getValue() || this.formData.commitCount;
       this.showDateRangeScreen();
     });
 
@@ -451,7 +459,7 @@ class BeautifulTerminalApp {
     this.screen.render();
   }
 
-  showDateRangeScreen() {
+  private showDateRangeScreen(): void {
     this.clearScreen();
 
     // Set default dates
@@ -563,12 +571,12 @@ class BeautifulTerminalApp {
     startInput.focus();
 
     startInput.key('enter', () => {
-      this.formData.startDate = startInput.getValue();
+      this.formData.startDate = startInput.getValue() || this.formData.startDate;
       endInput.focus();
     });
 
     endInput.key('enter', () => {
-      this.formData.endDate = endInput.getValue();
+      this.formData.endDate = endInput.getValue() || this.formData.endDate;
       this.showConfirmScreen();
     });
 
@@ -579,7 +587,7 @@ class BeautifulTerminalApp {
     this.screen.render();
   }
 
-  showConfirmScreen() {
+  private showConfirmScreen(): void {
     this.clearScreen();
 
     const mainBox = blessed.box({
@@ -703,7 +711,7 @@ class BeautifulTerminalApp {
     this.screen.render();
   }
 
-  showProgressScreen() {
+  private showProgressScreen(): void {
     this.clearScreen();
 
     const mainBox = blessed.box({
@@ -773,7 +781,7 @@ class BeautifulTerminalApp {
     this.screen.render();
   }
 
-  async executeCommits() {
+  private async executeCommits(): Promise<void> {
     const greenPath = path.join(this.greenDir, 'commit-data.json');
     let totalCommits = 0;
     
@@ -804,7 +812,7 @@ class BeautifulTerminalApp {
 
         const formattedDate = commitDate.format('YYYY-MM-DD HH:mm:ss');
         const commitMessage = commitMessages[i % commitMessages.length];
-        const data = { 
+        const data: CommitData = { 
           date: formattedDate,
           message: commitMessage,
           index: i + 1
@@ -816,14 +824,16 @@ class BeautifulTerminalApp {
         await this.greenGit.commit(commitMessage, { '--date': formattedDate });
 
         // Update progress
-        const progress = Math.round(((i + 1) / totalCommits) * 100);
-        this.progressBar.setProgress(progress);
-        this.progressBox.setContent(`{center}{cyan-fg}Creating commits... ${i + 1}/${totalCommits} (${progress}%){/cyan-fg}{/center}`);
-        this.screen.render();
+        if (this.progressBar && this.progressBox) {
+          const progress = Math.round(((i + 1) / totalCommits) * 100);
+          this.progressBar.setProgress(progress);
+          this.progressBox.setContent(`{center}{cyan-fg}Creating commits... ${i + 1}/${totalCommits} (${progress}%){/cyan-fg}{/center}`);
+          this.screen.render();
 
-        // Show current commit message
-        if (i < 5) { // Show first few commits for visual feedback
-          this.progressBox.setContent(`{center}{cyan-fg}Creating commits... ${i + 1}/${totalCommits} (${progress}%){/cyan-fg}\n{center}{gray-fg}${commitMessage.substring(0, 50)}...{/gray-fg}{/center}`);
+          // Show current commit message
+          if (i < 5) { // Show first few commits for visual feedback
+            this.progressBox.setContent(`{center}{cyan-fg}Creating commits... ${i + 1}/${totalCommits} (${progress}%){/cyan-fg}\n{center}{gray-fg}${commitMessage.substring(0, 50)}...{/gray-fg}{/center}`);
+          }
         }
 
         // Small delay to show progress
@@ -843,13 +853,13 @@ class BeautifulTerminalApp {
       }
     } catch (error) {
       // It's okay if there's no remote configured yet
-      console.log('No remote configured or push failed:', error.message);
+      console.log('No remote configured or push failed:', error);
     }
 
     this.showSuccessScreen(totalCommits);
   }
 
-  showSuccessScreen(commitsMade) {
+  private showSuccessScreen(commitsMade: number): void {
     this.clearScreen();
 
     const mainBox = blessed.box({
@@ -932,4 +942,4 @@ class BeautifulTerminalApp {
 }
 
 // Start the app
-const app = new BeautifulTerminalApp();
+const app = new GitGreenApp();

@@ -1,8 +1,9 @@
-import { ConventionalCommitGenerator } from './lib/conventional-commits.js';
+import { ConventionalCommitGenerator } from './lib/conventional-commits';
+import { FormData, CommitData } from './types';
 
 const generator = new ConventionalCommitGenerator();
 
-console.log('🌱 Angular Conventional Commit Examples:\n');
+console.log('🌱 Angular Conventional Commit Examples:');
 console.log('='.repeat(50));
 
 // Generate 10 example commits

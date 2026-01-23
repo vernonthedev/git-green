@@ -2,13 +2,15 @@
   "name": "git-green",
   "version": "1.0.0",
   "description": "Cool Git Commit Graphs",
-  "main": "app/index.js",
-  "type": "module",
+  "main": "dist/index.js",
+  "type": "commonjs",
   "scripts": {
-    "start": "node app/app.js",
-    "git-green": "node app/git-green.js",
-    "example-commits": "node app/test-commits.js",
-    "legacy": "node app/index.js",
+    "start": "ts-node app/app.ts",
+    "git-green": "ts-node app/git-green-simple.ts",
+    "example-commits": "ts-node app/test-commits.ts",
+    "legacy": "ts-node app/index.ts",
+    "build": "tsc",
+    "dev": "ts-node --watch app/git-green.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -47,5 +49,13 @@
   "bugs": {
     "url": "https://github.com/vernonthedev/git-green/issues"
   },
-  "homepage": "https://github.com/vernonthedev/git-green#readme"
+  "homepage": "https://github.com/vernonthedev/git-green#readme",
+  "devDependencies": {
+    "@types/blessed": "^0.1.27",
+    "@types/figlet": "^1.7.0",
+    "@types/jsonfile": "^6.1.4",
+    "@types/node": "^25.0.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
 }

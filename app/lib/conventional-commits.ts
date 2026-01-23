@@ -1,4 +1,10 @@
+import { CommitType, CommitMessage, CommitMode } from '../types/index.js';
+
 export class ConventionalCommitGenerator {
+  private readonly types: CommitType;
+  private readonly scopes: string[];
+  private readonly footers: string[];
+
   constructor() {
     this.types = {
       feat: [
@@ -108,7 +114,7 @@ export class ConventionalCommitGenerator {
     ];
   }
 
-  generateRandomCommit() {
+  generateRandomCommit(): string {
     const type = this.getRandomType();
     const scope = this.getRandomScope();
     const description = this.getRandomDescription(type);
@@ -137,17 +143,20 @@ export class ConventionalCommitGenerator {
     return commitMessage;
   }
 
-  getRandomType() {
+  private getRandomType(): string {
     const types = Object.keys(this.types);
-    return types[Math.floor(Math.random() * types.length)];
+    return types[Math.floor(Math.random() * types.length)] || 'feat';
   }
 
-  getRandomScope() {
-    return this.scopes[Math.floor(Math.random() * this.scopes.length)];
+  private getRandomScope(): string {
+    return this.scopes[Math.floor(Math.random() * this.scopes.length)] || 'core';
   }
 
-  getRandomDescription(type) {
+  private getRandomDescription(type: string): string {
     const descriptions = this.types[type];
+    if (!descriptions || descriptions.length === 0) {
+      return 'update code';
+    }
     const baseDescription = descriptions[Math.floor(Math.random() * descriptions.length)];
     
     // Add variety with context
@@ -169,60 +178,60 @@ export class ConventionalCommitGenerator {
       return `${baseDescription} ${context}`;
     }
 
-    return baseDescription;
+    return baseDescription || 'update code';
   }
 
-  getRandomFooter() {
-    return this.footers[Math.floor(Math.random() * this.footers.length)];
+  private getRandomFooter(): string {
+    return this.footers[Math.floor(Math.random() * this.footers.length)] || '';
   }
 
-  generateBody() {
+  private generateBody(): string {
     const bodyTemplates = [
-      'This change addresses several issues reported by users and improves the overall stability of the application.',
+      'This change addresses several issues reported by users and improves overall stability of application.',
       'The implementation has been optimized for better performance and reduced memory usage.',
       'Added comprehensive error handling and logging for better debugging capabilities.',
-      'Updated the implementation to follow best practices and improve code maintainability.',
+      'Updated to follow best practices and improve code maintainability.',
       'This change introduces new functionality while maintaining backward compatibility.',
-      'Improved the user interface with better accessibility and responsive design.',
-      'Enhanced security measures and implemented proper validation throughout the codebase.',
+      'Improved user interface with better accessibility and responsive design.',
+      'Enhanced security measures and implemented proper validation throughout codebase.',
       'Refactored legacy code to use modern patterns and improve developer experience.',
       'Added comprehensive tests to ensure reliability and prevent regressions.',
-      'Optimized the build process for faster compilation and better development workflow.'
+      'Optimized build process for faster compilation and better development workflow.'
     ];
 
-    return bodyTemplates[Math.floor(Math.random() * bodyTemplates.length)];
+    return bodyTemplates[Math.floor(Math.random() * bodyTemplates.length)] || 'Updated implementation for better performance.';
   }
 
   // Generate commit messages for specific scenarios
-  generateFeatureCommit() {
+  generateFeatureCommit(): string {
     const type = 'feat';
     const scope = this.getRandomScope();
     const description = this.getRandomDescription(type);
     return `${type}(${scope}): ${description}`;
   }
 
-  generateBugFixCommit() {
+  generateBugFixCommit(): string {
     const type = 'fix';
     const scope = this.getRandomScope();
     const description = this.getRandomDescription(type);
     return `${type}(${scope}): ${description}`;
   }
 
-  generateRefactorCommit() {
+  generateRefactorCommit(): string {
     const type = 'refactor';
     const scope = this.getRandomScope();
     const description = this.getRandomDescription(type);
     return `${type}(${scope}): ${description}`;
   }
 
-  generateTestCommit() {
+  generateTestCommit(): string {
     const type = 'test';
     const scope = this.getRandomScope();
     const description = this.getRandomDescription(type);
     return `${type}(${scope}): ${description}`;
   }
 
-  generateChoreCommit() {
+  generateChoreCommit(): string {
     const type = 'chore';
     const scope = this.getRandomScope();
     const description = this.getRandomDescription(type);
@@ -230,8 +239,8 @@ export class ConventionalCommitGenerator {
   }
 
   // Generate commits based on workflow patterns
-  generateWorkflowCommits(count = 10) {
-    const commits = [];
+  generateWorkflowCommits(count: number = 10): string[] {
+    const commits: string[] = [];
     const commitGenerators = [
       () => this.generateFeatureCommit(),
       () => this.generateBugFixCommit(),
@@ -243,7 +252,9 @@ export class ConventionalCommitGenerator {
 
     for (let i = 0; i < count; i++) {
       const generator = commitGenerators[Math.floor(Math.random() * commitGenerators.length)];
-      commits.push(generator());
+      if (generator) {
+        commits.push(generator());
+      }
     }
 
     return commits;
