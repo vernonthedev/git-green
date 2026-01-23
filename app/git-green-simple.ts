@@ -43,6 +43,10 @@ export class GitGreenApp {
     if (!fs.existsSync(this.greenDir)) {
       fs.mkdirSync(this.greenDir);
     }
+    if (!fs.existsSync(path.join(this.greenDir, '.git'))) {
+      const { execSync } = require('child_process');
+      execSync('git init', { cwd: this.greenDir });
+    }
     this.greenGit = simpleGit(this.greenDir);
     
     this.setupScreen();
@@ -321,17 +325,7 @@ export class GitGreenApp {
       }
     }
 
-    // Push to remote (if configured)
-    try {
-      // Check if remote exists
-      const remotes = await this.greenGit.getRemotes();
-      if (remotes.length > 0) {
-        await this.greenGit.push();
-      }
-    } catch (error) {
-      // It's okay if there's no remote configured yet
-      console.log('No remote configured or push failed:', error);
-    }
+
 
     this.showSuccessScreen(totalCommits);
   }

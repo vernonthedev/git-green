@@ -30,6 +30,10 @@ class CommitManager {
     if (!fs.existsSync(greenDir)) {
       fs.mkdirSync(greenDir);
     }
+    if (!fs.existsSync(path.join(greenDir, '.git'))) {
+      const { execSync } = require('child_process');
+      execSync('git init', { cwd: greenDir });
+    }
     this.git = simpleGit(greenDir);
     this.greenPath = path.join(greenDir, 'commit-data.json');
     this.commitGenerator = new ConventionalCommitGenerator();
@@ -177,16 +181,8 @@ class CommitManager {
 
     try {
       await this.makeCommits(totalCommits, startDate, endDate, year, spinner);
-      spinner.succeed(chalk.green(`Successfully created ${this.commitsMade} commits! 🎉`));
+      spinner.succeed(chalk.green(`Successfully created ${this.commitsMade} commits in local repository! 🎉`));
       
-      // Push to remote
-      const pushSpinner = ora('Pushing commits to remote...').start();
-      try {
-        await this.git.push();
-        pushSpinner.succeed('Commits pushed to remote repository!');
-      } catch (error) {
-        pushSpinner.warn('No remote configured or push failed');
-      }
       
     } catch (error) {
       spinner.fail(chalk.red(`Error creating commits: ${error}`));
