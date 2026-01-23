@@ -7,6 +7,7 @@ import jsonfile from 'jsonfile';
 import path from 'path';
 import { ConventionalCommitGenerator } from './lib/conventional-commits';
 import { FormData, CommitData } from './types/index';
+import fs from 'fs';
 
 interface PromptAnswers {
   year: string;
@@ -25,8 +26,12 @@ class CommitManager {
   private commitGenerator: ConventionalCommitGenerator;
 
   constructor() {
-    this.git = simpleGit(path.join(process.cwd(), 'green'));
-    this.greenPath = path.join(process.cwd(), 'green', 'commit-data.json');
+    const greenDir = path.join(process.cwd(), 'green');
+    if (!fs.existsSync(greenDir)) {
+      fs.mkdirSync(greenDir);
+    }
+    this.git = simpleGit(greenDir);
+    this.greenPath = path.join(greenDir, 'commit-data.json');
     this.commitGenerator = new ConventionalCommitGenerator();
   }
 
@@ -120,10 +125,10 @@ class CommitManager {
         },
         default: true
       }
-    ]);
+    ] as any);
 
     if (answers.confirm) {
-      await this.executeCommits(answers);
+      await this.executeCommits(answers as PromptAnswers);
     } else {
       console.log(chalk.red('Operation cancelled.'));
     }
@@ -214,7 +219,7 @@ class CommitManager {
         commitDate.year(parseInt(year));
 
         const formattedDate = commitDate.format('YYYY-MM-DD HH:mm:ss');
-        const commitMessage = commitMessages[i % commitMessages.length];
+        const commitMessage = commitMessages[i % commitMessages.length] || 'chore: add generated file';
         const data: CommitData = { 
           date: formattedDate,
           message: commitMessage,

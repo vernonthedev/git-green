@@ -6,6 +6,7 @@ import jsonfile from 'jsonfile';
 import path from 'path';
 import { ConventionalCommitGenerator } from './lib/conventional-commits';
 import { FormData, ScreenType, CommitData } from './types/index';
+import fs from 'fs';
 
 export class GitGreenApp {
   private screen: any;
@@ -39,6 +40,9 @@ export class GitGreenApp {
     // Initialize commit generator and git for green directory
     this.commitGenerator = new ConventionalCommitGenerator();
     this.greenDir = path.join(process.cwd(), 'green');
+    if (!fs.existsSync(this.greenDir)) {
+      fs.mkdirSync(this.greenDir);
+    }
     this.greenGit = simpleGit(this.greenDir);
     
     this.setupScreen();
@@ -70,11 +74,10 @@ export class GitGreenApp {
       top: 'center',
       left: 'center',
       width: '80%',
-      height: '80%',
       border: {
         type: 'line',
         fg: '#00ff00'
-      },
+      } as any,
       style: {
         fg: '#00ff00',
         bg: '#000000',
@@ -172,7 +175,7 @@ export class GitGreenApp {
       border: {
         type: 'line',
         fg: '#00ff00'
-      },
+      } as any,
       style: {
         fg: '#00ff00',
         bg: '#000000'
@@ -283,7 +286,7 @@ export class GitGreenApp {
         commitDate.year(parseInt(this.formData.year));
 
         const formattedDate = commitDate.format('YYYY-MM-DD HH:mm:ss');
-        const commitMessage = commitMessages[i % commitMessages.length];
+        const commitMessage = commitMessages[i % commitMessages.length] || 'chore: add generated file';
         const data: CommitData = { 
           date: formattedDate,
           message: commitMessage,
@@ -344,7 +347,7 @@ export class GitGreenApp {
       border: {
         type: 'line',
         fg: '#00ff00'
-      },
+      } as any,
       style: {
         fg: '#00ff00',
         bg: '#000000'
