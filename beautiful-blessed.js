@@ -5,6 +5,8 @@ import ora from 'ora';
 import moment from 'moment';
 import simpleGit from 'simple-git';
 import jsonfile from 'jsonfile';
+import path from 'path';
+import { ConventionalCommitGenerator } from './lib/conventional-commits.js';
 
 
 class BeautifulTerminalApp {
@@ -31,6 +33,11 @@ class BeautifulTerminalApp {
 
     this.currentStep = 0;
     this.steps = ['welcome', 'year', 'mode', 'count', 'dates', 'confirm', 'progress', 'success'];
+    
+    // Initialize commit generator and git for green directory
+    this.commitGenerator = new ConventionalCommitGenerator();
+    this.greenDir = path.join(process.cwd(), 'green');
+    this.greenGit = simpleGit(this.greenDir);
     
     this.setupScreen();
     this.showWelcomeScreen();
@@ -606,6 +613,7 @@ class BeautifulTerminalApp {
     // Generate summary
     let summary = `📅 Year: ${this.formData.year}\n`;
     summary += `📊 Mode: ${this.formData.commitMode}\n`;
+    summary += `📁 Directory: ./green\n`;
     
     if (this.formData.commitMode === 'specific') {
       summary += `🔢 Commits: ${this.formData.commitCount}\n`;
@@ -614,7 +622,8 @@ class BeautifulTerminalApp {
       summary += `🎲 Random commits: 1-${max}\n`;
     }
     
-    summary += `🗓️ Range: ${this.formData.startDate} to ${this.formData.endDate}`;
+    summary += `🗓️ Range: ${this.formData.startDate} to ${this.formData.endDate}\n`;
+    summary += `📝 Messages: Angular conventional commits`;
 
     const summaryBox = blessed.box({
       top: 8,
@@ -765,9 +774,7 @@ class BeautifulTerminalApp {
   }
 
   async executeCommits() {
-    const git = simpleGit();
-    const path = "./data.json";
-    
+    const greenPath = path.join(this.greenDir, 'commit-data.json');
     let totalCommits = 0;
     
     if (this.formData.commitMode === 'specific') {
@@ -779,6 +786,9 @@ class BeautifulTerminalApp {
       const end = moment(this.formData.endDate);
       totalCommits = end.diff(start, 'days') + 1;
     }
+
+    // Generate all commit messages upfront
+    const commitMessages = this.commitGenerator.generateWorkflowCommits(totalCommits);
 
     for (let i = 0; i < totalCommits; i++) {
       try {
@@ -793,17 +803,28 @@ class BeautifulTerminalApp {
         commitDate.year(parseInt(this.formData.year));
 
         const formattedDate = commitDate.format('YYYY-MM-DD HH:mm:ss');
-        const data = { date: formattedDate };
+        const commitMessage = commitMessages[i % commitMessages.length];
+        const data = { 
+          date: formattedDate,
+          message: commitMessage,
+          index: i + 1
+        };
 
-        await jsonfile.writeFile(path, data);
-        await git.add([path]);
-        await git.commit(formattedDate, { '--date': formattedDate });
+        // Write to green directory
+        await jsonfile.writeFile(greenPath, data);
+        await this.greenGit.add(['commit-data.json']);
+        await this.greenGit.commit(commitMessage, { '--date': formattedDate });
 
         // Update progress
         const progress = Math.round(((i + 1) / totalCommits) * 100);
         this.progressBar.setProgress(progress);
         this.progressBox.setContent(`{center}{cyan-fg}Creating commits... ${i + 1}/${totalCommits} (${progress}%){/cyan-fg}{/center}`);
         this.screen.render();
+
+        // Show current commit message
+        if (i < 5) { // Show first few commits for visual feedback
+          this.progressBox.setContent(`{center}{cyan-fg}Creating commits... ${i + 1}/${totalCommits} (${progress}%){/cyan-fg}\n{center}{gray-fg}${commitMessage.substring(0, 50)}...{/gray-fg}{/center}`);
+        }
 
         // Small delay to show progress
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -813,11 +834,16 @@ class BeautifulTerminalApp {
       }
     }
 
-    // Push to remote
+    // Push to remote (if configured)
     try {
-      await git.push();
+      // Check if remote exists
+      const remotes = await this.greenGit.getRemotes();
+      if (remotes.length > 0) {
+        await this.greenGit.push();
+      }
     } catch (error) {
-      console.error('Error pushing to remote:', error);
+      // It's okay if there's no remote configured yet
+      console.log('No remote configured or push failed:', error.message);
     }
 
     this.showSuccessScreen(totalCommits);
@@ -871,7 +897,7 @@ class BeautifulTerminalApp {
       left: 'center',
       width: '90%',
       height: 3,
-      content: '{center}{cyan-fg}Commits pushed to remote repository{/cyan-fg}{/center}',
+      content: '{center}{cyan-fg}Commits created in ./green directory{/cyan-fg}{/center}',
       tags: true,
       style: {
         fg: '#00ffff'

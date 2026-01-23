@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node app.js",
     "beautiful": "node beautiful-blessed.js",
+    "example-commits": "node test-commits.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
