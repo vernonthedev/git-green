@@ -291,6 +291,8 @@ export class GitGreenApp {
 
         const formattedDate = commitDate.format('YYYY-MM-DD HH:mm:ss');
         const commitMessage = commitMessages[i % commitMessages.length] || 'chore: add generated file';
+        const fileName = `commit-${i + 1}.txt`;
+        const filePath = path.join(path.dirname(greenPath), fileName);
         const data: CommitData = { 
           date: formattedDate,
           message: commitMessage,
@@ -298,8 +300,8 @@ export class GitGreenApp {
         };
 
         // Write to green directory
-        await jsonfile.writeFile(greenPath, data);
-        await this.greenGit.add(['commit-data.json']);
+        await jsonfile.writeFile(filePath, data);
+        await this.greenGit.add([filePath]);
         await this.greenGit.commit(commitMessage, { '--date': formattedDate });
 
         // Update progress

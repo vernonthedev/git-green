@@ -66,7 +66,8 @@ class CommitManager {
           { name: '🔢 Specific number of commits', value: 'specific' },
           { name: '📅 Complete range (every day)', value: 'complete' },
           { name: '🎯 Custom pattern', value: 'pattern' }
-        ]
+        ],
+        default: 'specific'
       },
       {
         type: 'input',
@@ -216,14 +217,17 @@ class CommitManager {
 
         const formattedDate = commitDate.format('YYYY-MM-DD HH:mm:ss');
         const commitMessage = commitMessages[i % commitMessages.length] || 'chore: add generated file';
+        // Create a new file for each commit to ensure a unique history
+        const fileName = `commit-${i + 1}.txt`;
+        const filePath = path.join(path.dirname(this.greenPath), fileName);
         const data: CommitData = { 
           date: formattedDate,
           message: commitMessage,
           index: i + 1
         };
 
-        await jsonfile.writeFile(this.greenPath, data);
-        await this.git.add(['commit-data.json']);
+        await jsonfile.writeFile(filePath, data);
+        await this.git.add([filePath]);
         await this.git.commit(commitMessage, { '--date': formattedDate });
         
         this.commitsMade++;
