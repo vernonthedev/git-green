@@ -2,7 +2,55 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import moment from 'moment'
 import { FormData, CommitMode } from '../lib/types/index'
+
+function ContributionGraph({ dateCounts, year }: { dateCounts: { [key: string]: number }, year: string }) {
+  const startOfYear = moment(`${year}-01-01`)
+  const endOfYear = moment(`${year}-12-31`)
+  const days = []
+
+  for (let date = startOfYear.clone(); date.isSameOrBefore(endOfYear); date.add(1, 'days')) {
+    const dateStr = date.format('YYYY-MM-DD')
+    const count = dateCounts[dateStr] || 0
+    days.push({ date: dateStr, count })
+  }
+
+  const getColor = (count: number) => {
+    if (count === 0) return 'bg-gray-800'
+    if (count === 1) return 'bg-green-900'
+    if (count <= 3) return 'bg-green-700'
+    if (count <= 6) return 'bg-green-500'
+    return 'bg-green-300'
+  }
+
+  // Group by weeks
+  const weeks = []
+  let currentWeek = []
+  days.forEach((day, index) => {
+    currentWeek.push(day)
+    if (currentWeek.length === 7 || index === days.length - 1) {
+      weeks.push(currentWeek)
+      currentWeek = []
+    }
+  })
+
+  return (
+    <div className="flex space-x-1">
+      {weeks.map((week, weekIndex) => (
+        <div key={weekIndex} className="flex flex-col space-y-1">
+          {week.map((day) => (
+            <div
+              key={day.date}
+              className={`w-3 h-3 rounded-sm ${getColor(day.count)}`}
+              title={`${day.date}: ${day.count} commits`}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default function Home() {
   const [formData, setFormData] = useState<FormData>({
@@ -14,6 +62,31 @@ export default function Home() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [previewData, setPreviewData] = useState<{ [key: string]: number } | null>(null)
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false)
+
+  const handlePreview = async () => {
+    setIsPreviewLoading(true)
+    setPreviewData(null)
+
+    try {
+      const response = await fetch('/api/preview-commits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      const result = await response.json()
+      if (response.ok) {
+        setPreviewData(result.dateCounts)
+      } else {
+        setMessage(`Preview Error: ${result.error}`)
+      }
+    } catch (error) {
+      setMessage('Failed to generate preview')
+    } finally {
+      setIsPreviewLoading(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,18 +113,18 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full"
+        className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md w-full border border-gray-700"
       >
         <motion.h1
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-3xl font-bold text-center text-green-600 mb-6"
+          className="text-3xl font-bold text-center text-green-400 mb-6"
         >
           🌱 Git Green
         </motion.h1>
@@ -59,7 +132,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-center text-gray-600 mb-8"
+          className="text-center text-gray-300 mb-8"
         >
           Create beautiful GitHub contribution graphs
         </motion.p>
@@ -70,14 +143,14 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-300 mb-1">
               Year
             </label>
             <input
               type="number"
               value={formData.year}
               onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               required
             />
           </motion.div>
@@ -87,13 +160,13 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-300 mb-1">
               Commit Mode
             </label>
             <select
               value={formData.commitMode}
               onChange={(e) => setFormData({ ...formData, commitMode: e.target.value as CommitMode })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
             >
               <option value="random">Random</option>
               <option value="specific">Specific</option>
@@ -107,14 +180,14 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
           >
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-300 mb-1">
               Commit Count
             </label>
             <input
               type="number"
               value={formData.commitCount}
               onChange={(e) => setFormData({ ...formData, commitCount: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
               required
             />
           </motion.div>
@@ -124,14 +197,14 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7 }}
           >
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-300 mb-1">
               Start Date (optional)
             </label>
             <input
               type="date"
               value={formData.startDate}
               onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </motion.div>
 
@@ -140,37 +213,63 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.8 }}
           >
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-300 mb-1">
               End Date (optional)
             </label>
             <input
               type="date"
               value={formData.endDate}
               onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </motion.div>
 
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 transition-colors"
-          >
-            {isLoading ? 'Generating...' : 'Generate Commits'}
-          </motion.button>
+          <div className="flex space-x-4">
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              type="button"
+              onClick={handlePreview}
+              disabled={isPreviewLoading}
+              className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 transition-colors"
+            >
+              {isPreviewLoading ? 'Loading Preview...' : 'Preview Graph'}
+            </motion.button>
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              type="submit"
+              disabled={isLoading}
+              className="flex-1 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 transition-colors"
+            >
+              {isLoading ? 'Generating...' : 'Generate Commits'}
+            </motion.button>
+          </div>
         </form>
 
         {message && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-4 text-center text-sm text-gray-600"
+            className="mt-4 text-center text-sm text-gray-300"
           >
             {message}
           </motion.p>
+        )}
+
+        {previewData && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-8"
+          >
+            <h3 className="text-lg font-semibold text-gray-300 mb-4">Contribution Graph Preview</h3>
+            <div className="bg-gray-700 rounded-lg p-4">
+              <ContributionGraph dateCounts={previewData} year={formData.year} />
+            </div>
+          </motion.div>
         )}
       </motion.div>
     </div>
