@@ -115,7 +115,9 @@ pnpm legacy-build    # Compile legacy TypeScript
 
 ### **Fully Functional**
 
-- **Beautiful Web UI**: Modern React interface with fluent animations
+- **Beautiful Web UI**: Modern dark-themed React interface with fluent animations and DM Sans font
+- **GitHub Contribution Graph Preview**: Interactive calendar view showing commit distribution before generation
+- **Rounded Design**: Contemporary rounded elements and full-page layout
 - **Angular Conventional Commits**: Smart commit message generation
 - **Type Safety**: Full TypeScript compilation
 - **Separate Directory**: Commits in `./green` folder
@@ -127,6 +129,15 @@ pnpm legacy-build    # Compile legacy TypeScript
 - **Complete Terminal Interface**: Full workflow implementation
 - **Input Validation**: Type-safe form validation
 - **Error Handling**: Proper error boundaries
+
+## **GitHub Contribution Graph Preview**
+
+The web application includes a live preview feature that displays your contribution graph before generating commits. This allows you to:
+
+- Visualize the commit distribution across the year
+- Adjust parameters to achieve desired patterns
+- Ensure the graph meets your expectations
+- Preview different commit modes and counts
 
 ## **Example Commit Messages**
 
