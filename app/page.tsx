@@ -70,29 +70,29 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-900">
       <main className="relative z-10">
-        <div className="container mx-auto px-4 py-12 md:py-20 max-w-5xl">
+        <div className="w-full max-w-7xl mx-auto px-6 py-6 md:py-12">
             {/* Header */}
             <div className="mb-16">
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+              <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
                 Git Green
               </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">
+              <p className="text-lg text-gray-300 leading-relaxed max-w-2xl">
                 Generate realistic GitHub contribution patterns. Craft your coding story with custom commit distributions across any timeframe.
               </p>
             </div>
 
             {/* Two Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
               {/* Left Column - Form */}
-              <div className="lg:col-span-1">
-                <div className="sticky top-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 space-y-6 shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-300">
+              <div className="lg:col-span-2">
+                <div className="sticky top-8 bg-gray-800 border border-gray-700 rounded-2xl p-8 space-y-6 shadow-lg hover:border-gray-600 transition-colors duration-300">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                    <h2 className="text-lg font-semibold text-white mb-1">
                       Configure
                     </h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">
+                    <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">
                       Parameters
                     </p>
                   </div>
@@ -109,11 +109,11 @@ export default function Home() {
               </div>
 
               {/* Right Column - Preview & Status */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-3 space-y-6">
                 {/* Preview Card */}
                 {previewData && (
-                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 shadow-lg hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-300">
-                    <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-6">
+                  <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 shadow-lg hover:border-gray-600 transition-colors duration-300">
+                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-6">
                       Preview
                     </h3>
                     <PreviewSection previewData={previewData} year={formData.year} />
@@ -123,13 +123,13 @@ export default function Home() {
                 {/* Info Cards */}
                 {!previewData && (
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-md hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-300">
-                      <h3 className="font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wide mb-3">Year</h3>
-                      <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{formData.year}</p>
+                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-md hover:border-gray-600 transition-colors duration-300">
+                      <h3 className="font-semibold text-gray-400 text-xs uppercase tracking-wide mb-3">Year</h3>
+                      <p className="text-3xl font-bold text-green-400">{formData.year}</p>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-md hover:border-gray-300 dark:hover:border-gray-600 transition-colors duration-300">
-                      <h3 className="font-semibold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wide mb-3">Commits</h3>
-                      <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{formData.commitCount}</p>
+                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-md hover:border-gray-600 transition-colors duration-300">
+                      <h3 className="font-semibold text-gray-400 text-xs uppercase tracking-wide mb-3">Commits</h3>
+                      <p className="text-3xl font-bold text-green-400">{formData.commitCount}</p>
                     </div>
                   </div>
                 )}
@@ -138,8 +138,8 @@ export default function Home() {
                 {message && <StatusMessage message={message} />}
 
                 {/* Help Text */}
-                <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 text-center shadow-sm hover:border-gray-200 dark:hover:border-gray-700 transition-colors duration-300">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 text-center shadow-sm hover:border-gray-600 transition-colors duration-300">
+                  <p className="text-xs text-gray-400 leading-relaxed">
                     Preview your graph before generating to ensure the pattern matches your expectations.
                   </p>
                 </div>
