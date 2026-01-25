@@ -24,11 +24,18 @@ export interface FormData {
   endDate: string;
 }
 
-export type CommitMode = 'random' | 'specific' | 'complete' | 'pattern';
+export type CommitMode = "random" | "specific" | "complete" | "pattern";
 
-export type ScreenType = 'welcome' | 'year' | 'mode' | 'count' | 'dates' | 'confirm' | 'progress' | 'success';
+export type ScreenType =
+  | "welcome"
+  | "year"
+  | "mode"
+  | "count"
+  | "dates"
+  | "confirm"
+  | "progress"
+  | "success";
 
-// Add string repeat polyfill for compatibility
 declare global {
   interface String {
     repeat(count: number): string;
@@ -36,7 +43,7 @@ declare global {
 }
 
 if (!String.prototype.repeat) {
-  String.prototype.repeat = function(count: number): string {
+  String.prototype.repeat = function (count: number): string {
     return new Array(count + 1).join(this);
   };
 }

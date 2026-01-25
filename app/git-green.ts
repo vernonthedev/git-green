@@ -1,11 +1,11 @@
-import blessed from 'blessed';
-import figlet from 'figlet';
-import moment from 'moment';
-import simpleGit from 'simple-git';
-import jsonfile from 'jsonfile';
-import path from 'path';
-import { ConventionalCommitGenerator } from './lib/conventional-commits';
-import { FormData, ScreenType, CommitData } from './types/index';
+import blessed from "blessed";
+import figlet from "figlet";
+import moment from "moment";
+import simpleGit from "simple-git";
+import jsonfile from "jsonfile";
+import path from "path";
+import { ConventionalCommitGenerator } from "./lib/conventional-commits";
+import { FormData, ScreenType, CommitData } from "./types/index";
 
 export class GitGreenApp {
   private screen: any;
@@ -22,38 +22,44 @@ export class GitGreenApp {
     this.screen = blessed.screen({
       smartCSR: true,
       autoPadding: true,
-      title: '🌱 Git Green - Beautiful Terminal App',
+      title: "🌱 Git Green - Beautiful Terminal App",
       cursor: {
         artificial: true,
-        shape: 'line',
+        shape: "line",
         blink: true,
-        element: 'underline'
-      }
+        element: "underline",
+      },
     });
 
     this.formData = {
       year: (new Date().getFullYear() - 1).toString(),
-      commitMode: '',
-      commitCount: '100',
-      startDate: '',
-      endDate: ''
+      commitMode: "",
+      commitCount: "100",
+      startDate: "",
+      endDate: "",
     };
 
     this.currentStep = 0;
-    this.steps = ['welcome', 'year', 'mode', 'count', 'dates', 'confirm', 'progress', 'success'];
-    
-    // Initialize commit generator and git for green directory
+    this.steps = [
+      "welcome",
+      "year",
+      "mode",
+      "count",
+      "dates",
+      "confirm",
+      "progress",
+      "success",
+    ];
     this.commitGenerator = new ConventionalCommitGenerator();
-    this.greenDir = path.join(process.cwd(), 'green');
+    this.greenDir = path.join(process.cwd(), "green");
     this.greenGit = simpleGit(this.greenDir);
-    
     this.setupScreen();
     this.showWelcomeScreen();
   }
 
   private setupScreen(): void {
-    this.screen.key(['escape', 'C-c'], () => process.exit(0));
-    this.screen.key(['q'], () => process.exit(0));
+    this.screen.key(["escape", "C-c"], () => process.exit(0));
+    this.screen.key(["q"], () => process.exit(0));
   }
 
   private clearScreen(): void {
@@ -61,13 +67,13 @@ export class GitGreenApp {
     this.screen = blessed.screen({
       smartCSR: true,
       autoPadding: true,
-      title: '🌱 Git Green - Beautiful Terminal App',
+      title: "Git Green - Beautiful Terminal App",
       cursor: {
         artificial: true,
-        shape: 'line',
+        shape: "line",
         blink: true,
-        element: 'underline'
-      }
+        element: "underline",
+      },
     });
     this.setupScreen();
   }
@@ -77,42 +83,42 @@ export class GitGreenApp {
 
     // Create main container
     const mainBox = blessed.box({
-      top: 'center',
-      left: 'center',
-      width: '80%',
-      height: '80%',
+      top: "center",
+      left: "center",
+      width: "80%",
+      height: "80%",
       border: {
-        type: 'line',
-        fg: '#00ff00'
+        type: "line",
+        fg: "#00ff00",
       },
       style: {
-        fg: '#00ff00',
-        bg: '#000000',
+        fg: "#00ff00",
+        bg: "#000000",
         border: {
-          fg: '#00ff00'
-        }
-      }
+          fg: "#00ff00",
+        },
+      },
     });
 
     // Title with figlet
     const titleBox = blessed.box({
       top: 2,
-      left: 'center',
-      width: '100%',
+      left: "center",
+      width: "100%",
       height: 10,
-      content: '',
+      content: "",
       tags: true,
       style: {
-        fg: '#00ff00',
-        bold: true
-      }
+        fg: "#00ff00",
+        bold: true,
+      },
     });
 
-    figlet.text('Git Green', { font: '3D' }, (err, data) => {
+    figlet.text("Git Green", { font: "3D" }, (err, data) => {
       if (err) {
-        titleBox.setContent('{green-fg}Git Green{/green-fg}');
+        titleBox.setContent("{green-fg}Git Green{/green-fg}");
       } else {
-        titleBox.setContent('{green-fg}' + data + '{/green-fg}');
+        titleBox.setContent("{green-fg}" + data + "{/green-fg}");
       }
       this.screen.render();
     });
@@ -120,40 +126,43 @@ export class GitGreenApp {
     // Subtitle
     const subtitleBox = blessed.box({
       top: 12,
-      left: 'center',
-      width: '100%',
+      left: "center",
+      width: "100%",
       height: 3,
-      content: '{center}{green-fg}🌱 Make Your GitHub Profile Green! 🌱{/green-fg}{/center}',
+      content:
+        "{center}{green-fg} Make Your GitHub Profile Green! {/green-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ff00'
-      }
+        fg: "#00ff00",
+      },
     });
 
     // Description
     const descBox = blessed.box({
       top: 15,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{gray-fg}A beautiful terminal app for creating GitHub commits{/gray-fg}{/center}',
+      content:
+        "{center}{gray-fg}A beautiful terminal app for creating GitHub commits{/gray-fg}{/center}",
       tags: true,
       style: {
-        fg: '#888888'
-      }
+        fg: "#888888",
+      },
     });
 
     // Instructions
     const instructionBox = blessed.box({
       bottom: 5,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{cyan-fg}Press Enter to continue • Press ESC to exit{/cyan-fg}{/center}',
+      content:
+        "{center}{cyan-fg}Press Enter to continue • Press ESC to exit{/cyan-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ffff'
-      }
+        fg: "#00ffff",
+      },
     });
 
     // Add boxes to screen
@@ -164,7 +173,7 @@ export class GitGreenApp {
     mainBox.append(instructionBox);
 
     // Handle input
-    this.screen.key(['enter'], () => {
+    this.screen.key(["enter"], () => {
       this.showYearScreen();
     });
 
@@ -175,69 +184,71 @@ export class GitGreenApp {
     this.clearScreen();
 
     const mainBox = blessed.box({
-      top: 'center',
-      left: 'center',
-      width: '80%',
-      height: '60%',
+      top: "center",
+      left: "center",
+      width: "80%",
+      height: "60%",
       border: {
-        type: 'line',
-        fg: '#00ff00'
+        type: "line",
+        fg: "#00ff00",
       },
       style: {
-        fg: '#00ff00',
-        bg: '#000000'
-      }
+        fg: "#00ff00",
+        bg: "#000000",
+      },
     });
 
     const titleBox = blessed.box({
       top: 2,
-      left: 'center',
-      width: '100%',
+      left: "center",
+      width: "100%",
       height: 5,
-      content: '{center}{green-fg}📅 Select Year{/green-fg}{/center}',
+      content: "{center}{green-fg}📅 Select Year{/green-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ff00',
-        bold: true
-      }
+        fg: "#00ff00",
+        bold: true,
+      },
     });
 
     const questionBox = blessed.box({
       top: 8,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{cyan-fg}Which year would you like to make commits in?{/cyan-fg}{/center}',
+      content:
+        "{center}{cyan-fg}Which year would you like to make commits in?{/cyan-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ffff'
-      }
+        fg: "#00ffff",
+      },
     });
 
     const inputBox = blessed.textbox({
       top: 12,
-      left: 'center',
-      width: '30%',
+      left: "center",
+      width: "30%",
       height: 3,
       content: this.formData.year,
       style: {
-        fg: '#ffffff',
-        bg: '#00ff00',
-        bold: true
+        fg: "#ffffff",
+        bg: "#00ff00",
+        bold: true,
       },
-      inputOnFocus: true
+      inputOnFocus: true,
     });
 
     const helpBox = blessed.box({
       bottom: 5,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{gray-fg}Enter year and press Enter • ESC to go back{/gray-fg}{/center}',
+      content:
+        "{center}{gray-fg}Enter year and press Enter • ESC to go back{/gray-fg}{/center}",
       tags: true,
       style: {
-        fg: '#888888'
-      }
+        fg: "#888888",
+      },
     });
 
     this.screen.append(mainBox);
@@ -248,12 +259,12 @@ export class GitGreenApp {
 
     inputBox.focus();
 
-    inputBox.key('enter', () => {
+    inputBox.key("enter", () => {
       this.formData.year = inputBox.getValue() || this.formData.year;
       this.showModeScreen();
     });
 
-    this.screen.key('escape', () => {
+    this.screen.key("escape", () => {
       this.showWelcomeScreen();
     });
 
@@ -264,75 +275,76 @@ export class GitGreenApp {
     this.clearScreen();
 
     const mainBox = blessed.box({
-      top: 'center',
-      left: 'center',
-      width: '80%',
-      height: '70%',
+      top: "center",
+      left: "center",
+      width: "80%",
+      height: "70%",
       border: {
-        type: 'line',
-        fg: '#00ff00'
+        type: "line",
+        fg: "#00ff00",
       },
       style: {
-        fg: '#00ff00',
-        bg: '#000000'
-      }
+        fg: "#00ff00",
+        bg: "#000000",
+      },
     });
 
     const titleBox = blessed.box({
       top: 2,
-      left: 'center',
-      width: '100%',
+      left: "center",
+      width: "100%",
       height: 5,
-      content: '{center}{green-fg}🎯 Commit Mode{/green-fg}{/center}',
+      content: "{center}{green-fg}🎯 Commit Mode{/green-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ff00',
-        bold: true
-      }
+        fg: "#00ff00",
+        bold: true,
+      },
     });
 
     const questionBox = blessed.box({
       top: 8,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{cyan-fg}How would you like to make commits?{/cyan-fg}{/center}',
+      content:
+        "{center}{cyan-fg}How would you like to make commits?{/cyan-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ffff'
-      }
+        fg: "#00ffff",
+      },
     });
 
     const modes = [
-      { key: '1', label: '🎲 Random number of commits', value: 'random' },
-      { key: '2', label: '🔢 Specific number of commits', value: 'specific' },
-      { key: '3', label: '📅 Complete range (every day)', value: 'complete' },
-      { key: '4', label: '🎯 Custom pattern', value: 'pattern' }
+      { key: "1", label: "Random number of commits", value: "random" },
+      { key: "2", label: "Specific number of commits", value: "specific" },
+      { key: "3", label: "Complete range (every day)", value: "complete" },
+      { key: "4", label: "Custom pattern", value: "pattern" },
     ];
 
     let yPos = 12;
-    modes.forEach(mode => {
+    modes.forEach((mode) => {
       const modeBox = blessed.box({
         top: yPos,
-        left: 'center',
-        width: '80%',
+        left: "center",
+        width: "80%",
         height: 3,
         content: `{center}{yellow-fg}[${mode.key}]{/yellow-fg} {white-fg}${mode.label}{/white-fg}{/center}`,
         tags: true,
         style: {
-          fg: '#ffffff',
+          fg: "#ffffff",
           hover: {
-            bg: '#00ff00',
-            fg: '#000000'
-          }
-        }
+            bg: "#00ff00",
+            fg: "#000000",
+          },
+        },
       });
 
       mainBox.append(modeBox);
 
       this.screen.key(mode.key, () => {
         this.formData.commitMode = mode.value;
-        if (mode.value === 'complete') {
+        if (mode.value === "complete") {
           this.showDateRangeScreen();
         } else {
           this.showCommitCountScreen();
@@ -344,14 +356,15 @@ export class GitGreenApp {
 
     const helpBox = blessed.box({
       bottom: 5,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{gray-fg}Press 1-4 to select • ESC to go back{/gray-fg}{/center}',
+      content:
+        "{center}{gray-fg}Press 1-4 to select • ESC to go back{/gray-fg}{/center}",
       tags: true,
       style: {
-        fg: '#888888'
-      }
+        fg: "#888888",
+      },
     });
 
     this.screen.append(mainBox);
@@ -359,7 +372,7 @@ export class GitGreenApp {
     mainBox.append(questionBox);
     mainBox.append(helpBox);
 
-    this.screen.key('escape', () => {
+    this.screen.key("escape", () => {
       this.showYearScreen();
     });
 
@@ -370,73 +383,75 @@ export class GitGreenApp {
     this.clearScreen();
 
     const mainBox = blessed.box({
-      top: 'center',
-      left: 'center',
-      width: '80%',
-      height: '60%',
+      top: "center",
+      left: "center",
+      width: "80%",
+      height: "60%",
       border: {
-        type: 'line',
-        fg: '#00ff00'
+        type: "line",
+        fg: "#00ff00",
       },
       style: {
-        fg: '#00ff00',
-        bg: '#000000'
-      }
+        fg: "#00ff00",
+        bg: "#000000",
+      },
     });
 
     const titleBox = blessed.box({
       top: 2,
-      left: 'center',
-      width: '100%',
+      left: "center",
+      width: "100%",
       height: 5,
-      content: '{center}{green-fg}🔢 Commit Count{/green-fg}{/center}',
+      content: "{center}{green-fg}🔢 Commit Count{/green-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ff00',
-        bold: true
-      }
+        fg: "#00ff00",
+        bold: true,
+      },
     });
 
-    const questionText = this.formData.commitMode === 'random' 
-      ? 'Maximum commits (random):' 
-      : 'How many commits?';
+    const questionText =
+      this.formData.commitMode === "random"
+        ? "Maximum commits (random):"
+        : "How many commits?";
 
     const questionBox = blessed.box({
       top: 8,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
       content: `{center}{cyan-fg}${questionText}{/cyan-fg}{/center}`,
       tags: true,
       style: {
-        fg: '#00ffff'
-      }
+        fg: "#00ffff",
+      },
     });
 
     const inputBox = blessed.textbox({
       top: 12,
-      left: 'center',
-      width: '30%',
+      left: "center",
+      width: "30%",
       height: 3,
       content: this.formData.commitCount,
       style: {
-        fg: '#ffffff',
-        bg: '#00ff00',
-        bold: true
+        fg: "#ffffff",
+        bg: "#00ff00",
+        bold: true,
       },
-      inputOnFocus: true
+      inputOnFocus: true,
     });
 
     const helpBox = blessed.box({
       bottom: 5,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{gray-fg}Enter number and press Enter • ESC to go back{/gray-fg}{/center}',
+      content:
+        "{center}{gray-fg}Enter number and press Enter • ESC to go back{/gray-fg}{/center}",
       tags: true,
       style: {
-        fg: '#888888'
-      }
+        fg: "#888888",
+      },
     });
 
     this.screen.append(mainBox);
@@ -447,12 +462,13 @@ export class GitGreenApp {
 
     inputBox.focus();
 
-    inputBox.key('enter', () => {
-      this.formData.commitCount = inputBox.getValue() || this.formData.commitCount;
+    inputBox.key("enter", () => {
+      this.formData.commitCount =
+        inputBox.getValue() || this.formData.commitCount;
       this.showDateRangeScreen();
     });
 
-    this.screen.key('escape', () => {
+    this.screen.key("escape", () => {
       this.showModeScreen();
     });
 
@@ -469,95 +485,96 @@ export class GitGreenApp {
     }
 
     const mainBox = blessed.box({
-      top: 'center',
-      left: 'center',
-      width: '80%',
-      height: '70%',
+      top: "center",
+      left: "center",
+      width: "80%",
+      height: "70%",
       border: {
-        type: 'line',
-        fg: '#00ff00'
+        type: "line",
+        fg: "#00ff00",
       },
       style: {
-        fg: '#00ff00',
-        bg: '#000000'
-      }
+        fg: "#00ff00",
+        bg: "#000000",
+      },
     });
 
     const titleBox = blessed.box({
       top: 2,
-      left: 'center',
-      width: '100%',
+      left: "center",
+      width: "100%",
       height: 5,
-      content: '{center}{green-fg}🗓️ Date Range{/green-fg}{/center}',
+      content: "{center}{green-fg}🗓️ Date Range{/green-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ff00',
-        bold: true
-      }
+        fg: "#00ff00",
+        bold: true,
+      },
     });
 
     const startLabel = blessed.box({
       top: 8,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{cyan-fg}Start Date (YYYY-MM-DD):{/cyan-fg}{/center}',
+      content: "{center}{cyan-fg}Start Date (YYYY-MM-DD):{/cyan-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ffff'
-      }
+        fg: "#00ffff",
+      },
     });
 
     const startInput = blessed.textbox({
       top: 11,
-      left: 'center',
-      width: '30%',
+      left: "center",
+      width: "30%",
       height: 3,
       content: this.formData.startDate,
       style: {
-        fg: '#ffffff',
-        bg: '#00ff00',
-        bold: true
+        fg: "#ffffff",
+        bg: "#00ff00",
+        bold: true,
       },
-      inputOnFocus: true
+      inputOnFocus: true,
     });
 
     const endLabel = blessed.box({
       top: 15,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{cyan-fg}End Date (YYYY-MM-DD):{/cyan-fg}{/center}',
+      content: "{center}{cyan-fg}End Date (YYYY-MM-DD):{/cyan-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ffff'
-      }
+        fg: "#00ffff",
+      },
     });
 
     const endInput = blessed.textbox({
       top: 18,
-      left: 'center',
-      width: '30%',
+      left: "center",
+      width: "30%",
       height: 3,
       content: this.formData.endDate,
       style: {
-        fg: '#ffffff',
-        bg: '#00ff00',
-        bold: true
+        fg: "#ffffff",
+        bg: "#00ff00",
+        bold: true,
       },
-      inputOnFocus: true
+      inputOnFocus: true,
     });
 
     const helpBox = blessed.box({
       bottom: 5,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{gray-fg}Enter dates and press Enter • ESC to go back{/gray-fg}{/center}',
+      content:
+        "{center}{gray-fg}Enter dates and press Enter • ESC to go back{/gray-fg}{/center}",
       tags: true,
       style: {
-        fg: '#888888'
-      }
+        fg: "#888888",
+      },
     });
 
     this.screen.append(mainBox);
@@ -570,17 +587,18 @@ export class GitGreenApp {
 
     startInput.focus();
 
-    startInput.key('enter', () => {
-      this.formData.startDate = startInput.getValue() || this.formData.startDate;
+    startInput.key("enter", () => {
+      this.formData.startDate =
+        startInput.getValue() || this.formData.startDate;
       endInput.focus();
     });
 
-    endInput.key('enter', () => {
+    endInput.key("enter", () => {
       this.formData.endDate = endInput.getValue() || this.formData.endDate;
       this.showConfirmScreen();
     });
 
-    this.screen.key('escape', () => {
+    this.screen.key("escape", () => {
       this.showCommitCountScreen();
     });
 
@@ -591,101 +609,104 @@ export class GitGreenApp {
     this.clearScreen();
 
     const mainBox = blessed.box({
-      top: 'center',
-      left: 'center',
-      width: '80%',
-      height: '70%',
+      top: "center",
+      left: "center",
+      width: "80%",
+      height: "70%",
       border: {
-        type: 'line',
-        fg: '#00ff00'
+        type: "line",
+        fg: "#00ff00",
       },
       style: {
-        fg: '#00ff00',
-        bg: '#000000'
-      }
+        fg: "#00ff00",
+        bg: "#000000",
+      },
     });
 
     const titleBox = blessed.box({
       top: 2,
-      left: 'center',
-      width: '100%',
+      left: "center",
+      width: "100%",
       height: 5,
-      content: '{center}{green-fg}✅ Confirm Settings{/green-fg}{/center}',
+      content: "{center}{green-fg}✅ Confirm Settings{/green-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ff00',
-        bold: true
-      }
+        fg: "#00ff00",
+        bold: true,
+      },
     });
 
     // Generate summary
-    let summary = `📅 Year: ${this.formData.year}\n`;
-    summary += `📊 Mode: ${this.formData.commitMode}\n`;
-    summary += `📁 Directory: ./green\n`;
-    
-    if (this.formData.commitMode === 'specific') {
-      summary += `🔢 Commits: ${this.formData.commitCount}\n`;
-    } else if (this.formData.commitMode === 'random') {
+    let summary = `Year: ${this.formData.year}\n`;
+    summary += `Mode: ${this.formData.commitMode}\n`;
+    summary += `Directory: ./green\n`;
+
+    if (this.formData.commitMode === "specific") {
+      summary += `Commits: ${this.formData.commitCount}\n`;
+    } else if (this.formData.commitMode === "random") {
       const max = parseInt(this.formData.commitCount);
-      summary += `🎲 Random commits: 1-${max}\n`;
+      summary += `Random commits: 1-${max}\n`;
     }
-    
-    summary += `🗓️ Range: ${this.formData.startDate} to ${this.formData.endDate}\n`;
-    summary += `📝 Messages: Angular conventional commits`;
+
+    summary += `Range: ${this.formData.startDate} to ${this.formData.endDate}\n`;
+    summary += `Messages: Angular conventional commits`;
 
     const summaryBox = blessed.box({
       top: 8,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 8,
       content: `{center}{white-fg}${summary}{/white-fg}{/center}`,
       tags: true,
       border: {
-        type: 'line',
-        fg: '#00ff00'
+        type: "line",
+        fg: "#00ff00",
       },
       style: {
-        fg: '#ffffff',
+        fg: "#ffffff",
         border: {
-          fg: '#00ff00'
-        }
-      }
+          fg: "#00ff00",
+        },
+      },
     });
 
     const questionBox = blessed.box({
       top: 18,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{yellow-fg}Proceed with these commits?{/yellow-fg}{/center}',
+      content:
+        "{center}{yellow-fg}Proceed with these commits?{/yellow-fg}{/center}",
       tags: true,
       style: {
-        fg: '#ffff00'
-      }
+        fg: "#ffff00",
+      },
     });
 
     const optionsBox = blessed.box({
       bottom: 8,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 5,
-      content: '{center}{green-fg}[Y] Yes{/green-fg}           {red-fg}[N] No{/red-fg}{/center}',
+      content:
+        "{center}{green-fg}[Y] Yes{/green-fg}           {red-fg}[N] No{/red-fg}{/center}",
       tags: true,
       style: {
-        fg: '#ffffff'
-      }
+        fg: "#ffffff",
+      },
     });
 
     const helpBox = blessed.box({
       bottom: 3,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{gray-fg}Press Y to confirm or N to cancel{/gray-fg}{/center}',
+      content:
+        "{center}{gray-fg}Press Y to confirm or N to cancel{/gray-fg}{/center}",
       tags: true,
       style: {
-        fg: '#888888'
-      }
+        fg: "#888888",
+      },
     });
 
     this.screen.append(mainBox);
@@ -695,16 +716,16 @@ export class GitGreenApp {
     mainBox.append(optionsBox);
     mainBox.append(helpBox);
 
-    this.screen.key('y', () => {
+    this.screen.key("y", () => {
       this.showProgressScreen();
       this.executeCommits();
     });
 
-    this.screen.key('n', () => {
+    this.screen.key("n", () => {
       this.showWelcomeScreen();
     });
 
-    this.screen.key('escape', () => {
+    this.screen.key("escape", () => {
       this.showDateRangeScreen();
     });
 
@@ -715,58 +736,59 @@ export class GitGreenApp {
     this.clearScreen();
 
     const mainBox = blessed.box({
-      top: 'center',
-      left: 'center',
-      width: '80%',
-      height: '60%',
+      top: "center",
+      left: "center",
+      width: "80%",
+      height: "60%",
       border: {
-        type: 'line',
-        fg: '#00ff00'
+        type: "line",
+        fg: "#00ff00",
       },
       style: {
-        fg: '#00ff00',
-        bg: '#000000'
-      }
+        fg: "#00ff00",
+        bg: "#000000",
+      },
     });
 
     const titleBox = blessed.box({
       top: 5,
-      left: 'center',
-      width: '100%',
+      left: "center",
+      width: "100%",
       height: 5,
-      content: '{center}{green-fg}⚡ Creating Commits...{/green-fg}{/center}',
+      content: "{center}{green-fg}⚡ Creating Commits...{/green-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ff00',
-        bold: true
-      }
+        fg: "#00ff00",
+        bold: true,
+      },
     });
 
     const progressBox = blessed.box({
       top: 12,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{cyan-fg}Please wait while we create your commits...{/cyan-fg}{/center}',
+      content:
+        "{center}{cyan-fg}Please wait while we create your commits...{/cyan-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ffff'
-      }
+        fg: "#00ffff",
+      },
     });
 
     const progressBar = blessed.progressbar({
       top: 18,
-      left: 'center',
-      width: '70%',
+      left: "center",
+      width: "70%",
       height: 3,
       filled: 0,
       style: {
-        fg: '#00ff00',
-        bg: '#333333',
+        fg: "#00ff00",
+        bg: "#333333",
         bar: {
-          fg: '#00ff00'
-        }
-      }
+          fg: "#00ff00",
+        },
+      },
     });
 
     this.screen.append(mainBox);
@@ -782,78 +804,71 @@ export class GitGreenApp {
   }
 
   private async executeCommits(): Promise<void> {
-    const greenPath = path.join(this.greenDir, 'commit-data.json');
+    const greenPath = path.join(this.greenDir, "commit-data.json");
     let totalCommits = 0;
-    
-    if (this.formData.commitMode === 'specific') {
+
+    if (this.formData.commitMode === "specific") {
       totalCommits = parseInt(this.formData.commitCount);
-    } else if (this.formData.commitMode === 'random') {
-      totalCommits = Math.floor(Math.random() * parseInt(this.formData.commitCount)) + 1;
-    } else if (this.formData.commitMode === 'complete') {
+    } else if (this.formData.commitMode === "random") {
+      totalCommits =
+        Math.floor(Math.random() * parseInt(this.formData.commitCount)) + 1;
+    } else if (this.formData.commitMode === "complete") {
       const start = moment(this.formData.startDate);
       const end = moment(this.formData.endDate);
-      totalCommits = end.diff(start, 'days') + 1;
+      totalCommits = end.diff(start, "days") + 1;
     }
 
-    // Generate all commit messages upfront
-    const commitMessages = this.commitGenerator.generateWorkflowCommits(totalCommits);
+    const commitMessages =
+      this.commitGenerator.generateWorkflowCommits(totalCommits);
 
     for (let i = 0; i < totalCommits; i++) {
       try {
-        // Generate random date within range
         const start = moment(this.formData.startDate);
         const end = moment(this.formData.endDate);
-        const totalDays = end.diff(start, 'days') + 1;
+        const totalDays = end.diff(start, "days") + 1;
         const randomDayOffset = Math.floor(Math.random() * totalDays);
-        const commitDate = moment(start).add(randomDayOffset, 'days');
-        
-        // Set the year explicitly
+        const commitDate = moment(start).add(randomDayOffset, "days");
         commitDate.year(parseInt(this.formData.year));
 
-        const formattedDate = commitDate.format('YYYY-MM-DD HH:mm:ss');
+        const formattedDate = commitDate.format("YYYY-MM-DD HH:mm:ss");
         const commitMessage = commitMessages[i % commitMessages.length];
-        const data: CommitData = { 
+        const data: CommitData = {
           date: formattedDate,
           message: commitMessage,
-          index: i + 1
+          index: i + 1,
         };
-
-        // Write to green directory
         await jsonfile.writeFile(greenPath, data);
-        await this.greenGit.add(['commit-data.json']);
-        await this.greenGit.commit(commitMessage, { '--date': formattedDate });
+        await this.greenGit.add(["commit-data.json"]);
+        await this.greenGit.commit(commitMessage, { "--date": formattedDate });
 
-        // Update progress
         if (this.progressBar && this.progressBox) {
           const progress = Math.round(((i + 1) / totalCommits) * 100);
           this.progressBar.setProgress(progress);
-          this.progressBox.setContent(`{center}{cyan-fg}Creating commits... ${i + 1}/${totalCommits} (${progress}%){/cyan-fg}{/center}`);
+          this.progressBox.setContent(
+            `{center}{cyan-fg}Creating commits... ${i + 1}/${totalCommits} (${progress}%){/cyan-fg}{/center}`,
+          );
           this.screen.render();
 
-          // Show current commit message
-          if (i < 5) { // Show first few commits for visual feedback
-            this.progressBox.setContent(`{center}{cyan-fg}Creating commits... ${i + 1}/${totalCommits} (${progress}%){/cyan-fg}\n{center}{gray-fg}${commitMessage.substring(0, 50)}...{/gray-fg}{/center}`);
+          if (i < 5) {
+            this.progressBox.setContent(
+              `{center}{cyan-fg}Creating commits... ${i + 1}/${totalCommits} (${progress}%){/cyan-fg}\n{center}{gray-fg}${commitMessage.substring(0, 50)}...{/gray-fg}{/center}`,
+            );
           }
         }
 
-        // Small delay to show progress
-        await new Promise(resolve => setTimeout(resolve, 100));
-
+        await new Promise((resolve) => setTimeout(resolve, 100));
       } catch (error) {
-        console.error('Error creating commit:', error);
+        console.error("Error creating commit:", error);
       }
     }
 
-    // Push to remote (if configured)
     try {
-      // Check if remote exists
       const remotes = await this.greenGit.getRemotes();
       if (remotes.length > 0) {
         await this.greenGit.push();
       }
     } catch (error) {
-      // It's okay if there's no remote configured yet
-      console.log('No remote configured or push failed:', error);
+      console.log("No remote configured or push failed:", error);
     }
 
     this.showSuccessScreen(totalCommits);
@@ -863,67 +878,68 @@ export class GitGreenApp {
     this.clearScreen();
 
     const mainBox = blessed.box({
-      top: 'center',
-      left: 'center',
-      width: '80%',
-      height: '60%',
+      top: "center",
+      left: "center",
+      width: "80%",
+      height: "60%",
       border: {
-        type: 'line',
-        fg: '#00ff00'
+        type: "line",
+        fg: "#00ff00",
       },
       style: {
-        fg: '#00ff00',
-        bg: '#000000'
-      }
+        fg: "#00ff00",
+        bg: "#000000",
+      },
     });
 
     const titleBox = blessed.box({
       top: 5,
-      left: 'center',
-      width: '100%',
+      left: "center",
+      width: "100%",
       height: 5,
-      content: '{center}{green-fg}🎉 Success!{/green-fg}{/center}',
+      content: "{center}{green-fg}🎉 Success!{/green-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ff00',
-        bold: true
-      }
+        fg: "#00ff00",
+        bold: true,
+      },
     });
 
     const messageBox = blessed.box({
       top: 12,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 5,
       content: `{center}{white-fg}Successfully created ${commitsMade} commits!{/white-fg}{/center}`,
       tags: true,
       style: {
-        fg: '#ffffff'
-      }
+        fg: "#ffffff",
+      },
     });
 
     const pushBox = blessed.box({
       top: 18,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{cyan-fg}Commits created in ./green directory{/cyan-fg}{/center}',
+      content:
+        "{center}{cyan-fg}Commits created in ./green directory{/cyan-fg}{/center}",
       tags: true,
       style: {
-        fg: '#00ffff'
-      }
+        fg: "#00ffff",
+      },
     });
 
     const exitBox = blessed.box({
       bottom: 5,
-      left: 'center',
-      width: '90%',
+      left: "center",
+      width: "90%",
       height: 3,
-      content: '{center}{gray-fg}Press any key to exit{/gray-fg}{/center}',
+      content: "{center}{gray-fg}Press any key to exit{/gray-fg}{/center}",
       tags: true,
       style: {
-        fg: '#888888'
-      }
+        fg: "#888888",
+      },
     });
 
     this.screen.append(mainBox);
@@ -932,8 +948,7 @@ export class GitGreenApp {
     mainBox.append(pushBox);
     mainBox.append(exitBox);
 
-    // Exit on any key
-    this.screen.key(['enter', 'escape', 'q'], () => {
+    this.screen.key(["enter", "escape", "q"], () => {
       process.exit(0);
     });
 
