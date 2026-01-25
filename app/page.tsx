@@ -127,7 +127,7 @@ export default function Home() {
           transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
           className="text-5xl font-bold text-center text-green-400 mb-4 drop-shadow-lg"
         >
-          🌱 Git Green
+          Git Green
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
