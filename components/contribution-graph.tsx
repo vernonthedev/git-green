@@ -50,11 +50,11 @@ export function ContributionGraph({ dateCounts, year }: ContributionGraphProps) 
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs text-foreground/50">Less</span>
-          <div className="flex gap-0.5">
+          <div className="flex gap-px">
             {[0, 1, 2, 3, 4].map((level) => (
               <div
                 key={level}
-                className={`w-3.5 h-3.5 rounded-sm ${
+                className={`w-2.5 h-2.5 rounded-sm ${
                   level === 0
                     ? 'bg-neutral-700/40'
                     : level === 1
@@ -73,16 +73,16 @@ export function ContributionGraph({ dateCounts, year }: ContributionGraphProps) 
       </div>
 
       {/* Graph */}
-      <div className="flex flex-wrap gap-0.5 pb-2">
+      <div className="flex flex-nowrap gap-px pb-2">
         {displayWeeks.map((week, weekIndex) => (
           <div
             key={weekIndex}
-            className="flex flex-col gap-0.5"
+            className="flex flex-col gap-px"
           >
             {week.map((day) => (
               <div
                 key={day.date}
-                className={`w-3.5 h-3.5 rounded-md transition-all duration-200 cursor-pointer ${getColor(day.count)} hover:scale-110`}
+                className={`w-3 h-3 rounded-md transition-all duration-200 cursor-pointer ${getColor(day.count)} hover:scale-110`}
                 title={`${day.date}: ${day.count} commits`}
               />
             ))}

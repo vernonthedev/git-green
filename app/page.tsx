@@ -70,11 +70,11 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <main className="relative z-10">
         <div className="w-full max-w-7xl mx-auto px-6 py-6 md:py-12">
             {/* Header */}
-            <div className="mb-16">
+            <div className="mb-8">
               <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
                 Git Green
               </h1>
@@ -84,10 +84,10 @@ export default function Home() {
             </div>
 
             {/* Two Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
               {/* Left Column - Form */}
               <div className="lg:col-span-2">
-                <div className="sticky top-8 bg-gray-800 border border-gray-700 rounded-2xl p-8 space-y-6 shadow-lg hover:border-gray-600 transition-colors duration-300">
+                <div className="sticky top-8 bg-gray-800 border border-gray-700 rounded-2xl p-4 space-y-3 shadow-lg hover:border-gray-600 transition-colors duration-300">
                   <div>
                     <h2 className="text-lg font-semibold text-white mb-1">
                       Configure
@@ -109,10 +109,10 @@ export default function Home() {
               </div>
 
               {/* Right Column - Preview & Status */}
-              <div className="lg:col-span-3 space-y-6">
+              <div className="lg:col-span-3 space-y-3">
                 {/* Preview Card */}
                 {previewData && (
-                  <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 shadow-lg hover:border-gray-600 transition-colors duration-300">
+                  <div className="bg-gray-800 border border-gray-700 rounded-2xl p-4 shadow-lg hover:border-gray-600 transition-colors duration-300">
                     <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-6">
                       Preview
                     </h3>
@@ -123,11 +123,11 @@ export default function Home() {
                 {/* Info Cards */}
                 {!previewData && (
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-md hover:border-gray-600 transition-colors duration-300">
+                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-3 shadow-md hover:border-gray-600 transition-colors duration-300">
                       <h3 className="font-semibold text-gray-400 text-xs uppercase tracking-wide mb-3">Year</h3>
                       <p className="text-3xl font-bold text-green-400">{formData.year}</p>
                     </div>
-                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-md hover:border-gray-600 transition-colors duration-300">
+                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-3 shadow-md hover:border-gray-600 transition-colors duration-300">
                       <h3 className="font-semibold text-gray-400 text-xs uppercase tracking-wide mb-3">Commits</h3>
                       <p className="text-3xl font-bold text-green-400">{formData.commitCount}</p>
                     </div>
@@ -138,7 +138,7 @@ export default function Home() {
                 {message && <StatusMessage message={message} />}
 
                 {/* Help Text */}
-                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 text-center shadow-sm hover:border-gray-600 transition-colors duration-300">
+                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-3 text-center shadow-sm hover:border-gray-600 transition-colors duration-300">
                   <p className="text-xs text-gray-400 leading-relaxed">
                     Preview your graph before generating to ensure the pattern matches your expectations.
                   </p>
