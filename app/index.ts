@@ -28,8 +28,11 @@ const markCommit = (x: number, y: number): void => {
   });
 };
 
-const makeCommits = (n: number): void => {
-  if(n === 0) return git.push();
+const makeCommits = async (n: number): Promise<void> => {
+  if(n === 0) {
+    await git.push();
+    return;
+  }
   const x = random.int(0, 54);
   const y = random.int(0, 6);
   const date = moment().subtract(1, "y").add(1, "d").add(x, "w").add(y, "d").format();
