@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
-import { DM_Sans } from 'next/font/google'
+import { Geist } from 'next/font/google'
 import './globals.css'
 
-const dmSans = DM_Sans({ subsets: ['latin'] })
+const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Git Green - Beautiful Contribution Graphs',
@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={dmSans.className}>{children}</body>
+      <body className={geist.className}>{children}</body>
     </html>
   )
 }
