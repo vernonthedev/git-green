@@ -36,13 +36,13 @@ function ContributionGraph({ dateCounts, year }: { dateCounts: { [key: string]: 
   })
 
   return (
-    <div className="flex space-x-1">
+    <div className="flex space-x-0.5 overflow-x-auto max-w-full">
       {weeks.map((week, weekIndex) => (
-        <div key={weekIndex} className="flex flex-col space-y-1">
+        <div key={weekIndex} className="flex flex-col space-y-0.5">
           {week.map((day) => (
             <div
               key={day.date}
-              className={`w-3 h-3 rounded-sm ${getColor(day.count)}`}
+              className={`w-3 h-3 rounded-sm ${getColor(day.count)} hover:scale-125 transition-transform`}
               title={`${day.date}: ${day.count} commits`}
             />
           ))}
@@ -113,18 +113,19 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md w-full border border-gray-700"
-      >
+    <div className="min-h-screen bg-gray-900 p-8">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-gray-800 rounded-3xl shadow-2xl p-8 border border-gray-700 max-w-4xl mx-auto"
+        >
         <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="text-3xl font-bold text-center text-green-400 mb-6"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
+          className="text-5xl font-bold text-center text-green-400 mb-4 drop-shadow-lg"
         >
           🌱 Git Green
         </motion.h1>
@@ -132,10 +133,23 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-center text-gray-300 mb-8"
+          className="text-center text-gray-300 mb-8 text-lg"
         >
           Create beautiful GitHub contribution graphs
         </motion.p>
+
+        {previewData && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-12"
+          >
+            <h3 className="text-2xl font-semibold text-center text-gray-300 mb-6">Contribution Graph Preview</h3>
+            <div className="bg-gradient-to-br from-gray-700 to-gray-800 rounded-2xl p-6 shadow-lg flex justify-center">
+              <ContributionGraph dateCounts={previewData} year={formData.year} />
+            </div>
+          </motion.div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <motion.div
@@ -232,7 +246,7 @@ export default function Home() {
               type="button"
               onClick={handlePreview}
               disabled={isPreviewLoading}
-              className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 transition-colors"
+              className="flex-1 bg-blue-500 text-white py-3 px-6 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 transition-colors font-semibold"
             >
               {isPreviewLoading ? 'Loading Preview...' : 'Preview Graph'}
             </motion.button>
@@ -242,7 +256,7 @@ export default function Home() {
               transition={{ delay: 0.9 }}
               type="submit"
               disabled={isLoading}
-              className="flex-1 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 transition-colors"
+              className="flex-1 bg-green-500 text-white py-3 px-6 rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 transition-colors font-semibold"
             >
               {isLoading ? 'Generating...' : 'Generate Commits'}
             </motion.button>
@@ -258,20 +272,8 @@ export default function Home() {
             {message}
           </motion.p>
         )}
-
-        {previewData && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-8"
-          >
-            <h3 className="text-lg font-semibold text-gray-300 mb-4">Contribution Graph Preview</h3>
-            <div className="bg-gray-700 rounded-lg p-4">
-              <ContributionGraph dateCounts={previewData} year={formData.year} />
-            </div>
-          </motion.div>
-        )}
       </motion.div>
+      </div>
     </div>
   )
 }
