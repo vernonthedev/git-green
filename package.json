@@ -4,6 +4,7 @@
   "description": "Cool Git Commit Graphs",
   "main": "dist/index.js",
   "type": "module",
+  "author": "vernonthedev",
   "scripts": {
     "dev": "next dev --port 4000",
     "build": "next build",
@@ -18,7 +19,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "@babel/cli": "^7.28.6",

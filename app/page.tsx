@@ -226,7 +226,7 @@ export default function Home() {
             &gt; Git Green v1.0.0 | System Architecture: terminal-ui-v1
           </p>
           <p className="text-green-900 text-[10px] mt-2">
-            All rights reserved to the code archaeologists.
+            All rights reserved to vernonthedev.
           </p>
         </div>
       </footer>
