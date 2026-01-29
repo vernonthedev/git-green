@@ -1,35 +1,40 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { AlertCircle, CheckCircle2 } from 'lucide-react'
+import React from "react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 interface StatusMessageProps {
-  message: string
+  message: string;
 }
 
 export function StatusMessage({ message }: StatusMessageProps) {
-  if (!message) return null
+  if (!message) return null;
 
-  const isError = message.toLowerCase().includes('error')
+  const isError = message.toLowerCase().includes("error");
 
   return (
-    <div className={`relative overflow-hidden rounded-xl px-5 py-4 border backdrop-blur-sm transition-all duration-300 ${
-      isError
-        ? 'bg-destructive/12 border-destructive/25 text-destructive'
-        : 'bg-primary/12 border-primary/25 text-primary'
-    }`}>
-      <div className={`absolute inset-0 ${isError ? 'bg-gradient-to-r from-destructive/5 to-transparent' : 'bg-gradient-to-r from-primary/5 to-transparent'} pointer-events-none`} />
-
-      <div className="relative flex items-start gap-3">
-        <div className="flex-shrink-0 mt-0.5">
+    <div
+      className={`p-4 border-2 font-mono ${
+        isError
+          ? "bg-red-950/20 border-red-500 text-red-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]"
+          : "bg-green-950/20 border-green-500 text-green-500 shadow-[0_0_10px_rgba(34,197,94,0.2)]"
+      }`}
+    >
+      <div className="flex items-start gap-4">
+        <div className="flex-shrink-0 mt-1">
           {isError ? (
-            <AlertCircle className="w-5 h-5" strokeWidth={2} />
+            <AlertCircle className="w-5 h-5 animate-pulse" />
           ) : (
-            <CheckCircle2 className="w-5 h-5" strokeWidth={2} />
+            <CheckCircle2 className="w-5 h-5" />
           )}
         </div>
-        <p className="text-sm font-medium leading-relaxed flex-1">{message}</p>
+        <div className="space-y-1">
+          <p className="text-xs font-bold uppercase tracking-widest opacity-70">
+            {isError ? "[ FATAL_ERROR ]" : "[ SYSTEM_LOG ]"}
+          </p>
+          <p className="text-sm font-bold leading-relaxed">{message}</p>
+        </div>
       </div>
     </div>
-  )
+  );
 }

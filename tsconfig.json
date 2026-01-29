@@ -18,11 +18,7 @@
     "removeComments": false,
     "jsx": "react-jsx",
     "allowJs": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "noEmit": true,
     "incremental": true,
     "isolatedModules": true,
@@ -30,7 +26,10 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "lib/**/*",
@@ -38,11 +37,7 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "green"
-  ],
+  "exclude": ["node_modules", "dist", "green"],
   "ts-node": {
     "esm": false
   }
