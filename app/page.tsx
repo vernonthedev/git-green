@@ -85,16 +85,16 @@ export default function Home() {
       <header className="border-b-2 border-green-400 bg-black/90 px-6 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center">
-            <pre className="text-green-400 text-[10px] md:text-sm mb-4 leading-tight inline-block text-left">
-              {`
-  ██████╗ ██╗████████╗    ██████╗ ██████╗ ███████╗███████╗███╗   ██╗
- ██╔════╝ ██║╚══██╔══╝    ██╔════╝ ██╔══██╗██╔════╝██╔════╝████╗  ██║
- ██║  ███╗██║   ██║       ██║  ███╗██████╔╝█████╗  █████╗  ██╔██╗ ██║
- ██║   ██║██║   ██║       ██║   ██║██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║
- ╚██████╔╝██║   ██║       ╚██████╔╝██║  ██║███████╗███████╗██║ ╚████║
-  ╚═════╝ ╚═╝   ╚═╝        ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝
-              `}
-            </pre>
+            <div className="text-center mb-4">
+              <pre style={{ fontFamily: '"JetBrains Mono", "Courier New", monospace', fontSize: 'clamp(10px, 2.5vw, 18px)', lineHeight: '1', whiteSpace: 'pre', color: '#22c55e', userSelect: 'none' }}>
+{`███████╗ ██╗████████╗    ██████╗ ██████╗ ███████╗███████╗███╗   ██╗
+██╔════╝ ██║╚══██╔══╝    ██╔════╝ ██╔══██╗██╔════╝██╔════╝████╗  ██║
+██║  ███╗██║   ██║       ██║  ███╗██████╔╝█████╗  █████╗  ██╔██╗ ██║
+██║   ██║██║   ██║       ██║   ██║██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║
+╚██████╔╝██║   ██║       ╚██████╔╝██║  ██║███████╗███████╗██║ ╚████║
+ ╚═════╝ ╚═╝   ╚═╝        ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝`}
+              </pre>
+            </div>
             <h1 className="text-2xl md:text-4xl font-bold text-green-400 mb-2 glitch uppercase tracking-widest">
               ~/git-green$
             </h1>
