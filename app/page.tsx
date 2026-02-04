@@ -5,7 +5,7 @@ import { useState } from "react";
 import { GitForm } from "../components/git-form";
 import { PreviewSection } from "../components/preview-section";
 import { StatusMessage } from "../components/status-message";
-import { FormData, CommitMode } from "../lib/types/index";
+import { FormData, CommitMode } from "../src/types/index";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -86,8 +86,17 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center">
             <div className="text-center mb-4">
-              <pre style={{ fontFamily: '"JetBrains Mono", "Courier New", monospace', fontSize: 'clamp(10px, 2.5vw, 18px)', lineHeight: '1', whiteSpace: 'pre', color: '#22c55e', userSelect: 'none' }}>
-{`███████╗ ██╗████████╗    ██████╗ ██████╗ ███████╗███████╗███╗   ██╗
+              <pre
+                style={{
+                  fontFamily: '"JetBrains Mono", "Courier New", monospace',
+                  fontSize: "clamp(10px, 2.5vw, 18px)",
+                  lineHeight: "1",
+                  whiteSpace: "pre",
+                  color: "#22c55e",
+                  userSelect: "none",
+                }}
+              >
+                {`███████╗ ██╗████████╗    ██████╗ ██████╗ ███████╗███████╗███╗   ██╗
 ██╔════╝ ██║╚══██╔══╝    ██╔════╝ ██╔══██╗██╔════╝██╔════╝████╗  ██║
 ██║  ███╗██║   ██║       ██║  ███╗██████╔╝█████╗  █████╗  ██╔██╗ ██║
 ██║   ██║██║   ██║       ██║   ██║██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║

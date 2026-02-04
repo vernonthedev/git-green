@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Eye, Send, Loader2 } from "lucide-react";
-import { FormData, CommitMode } from "../lib/types/index";
+import { FormData, CommitMode } from "../src/types/index";
 import { Button } from "@/components/ui/button";
 
 interface GitFormProps {

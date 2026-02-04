@@ -10,12 +10,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "legacy-start": "ts-node lib/app.ts",
-    "legacy-git-green": "ts-node lib/git-green.ts",
-    "legacy-git-green-tui": "ts-node lib/git-green-tui.ts",
-    "legacy-example-commits": "ts-node lib/test-commits.ts",
-    "legacy-legacy": "ts-node lib/index.ts",
-    "legacy-build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
